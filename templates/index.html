@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureChat | Advanced Communication</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- AOS Library for Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #CFB08D;
+            --accent: #b89a7a;
+            --dark-bg: #FFFFFF;
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(207, 176, 141, 0.3);
+            --text-main: #1a1a1a;
+            --text-dim: #666666;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary) !important;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 600;
+            margin-left: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 160px 0 100px;
+            background: radial-gradient(circle at top right, rgba(61, 140, 149, 0.15), transparent 50%),
+                radial-gradient(circle at bottom left, rgba(230, 135, 60, 0.05), transparent 50%);
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #2c3e50 0%, #CFB08D 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .btn-glow {
+            padding: 1rem 2.5rem;
+            font-weight: 700;
+            border-radius: 50px;
+            background: var(--primary);
+            color: var(--dark-bg);
+            border: none;
+            box-shadow: 0 0 30px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(207, 176, 141, 0.4);
+            background: #c3a17e;
+            color: #fff;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(37, 211, 102, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+
+        /* Features Section */
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(37, 211, 102, 0.1);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* Secure Console (CRUD Area) */
+        .console-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(207, 176, 141, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .console-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red {
+            background: #ff5f56;
+        }
+
+        .dot-yellow {
+            background: #ffbd2e;
+        }
+
+        .dot-green {
+            background: #3D8C95;
+        }
+
+        .form-control {
+            background: #fbfbfb;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+        }
+
+        .form-control:focus {
+            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(207, 176, 141, 0.2);
+            color: var(--text-main);
+        }
+
+        .table {
+            color: var(--text-main);
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .table tr {
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.2s;
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .table td,
+        .table th {
+            border: none;
+            padding: 1.2rem;
+            vertical-align: middle;
+        }
+
+        .table th {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .badge-user {
+            background: rgba(37, 211, 102, 0.15);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: rgba(255, 189, 46, 0.15);
+            color: #ffbd2e;
+        }
+
+        .btn-delete {
+            background: rgba(230, 135, 60, 0.15);
+            color: #E6873C;
+        }
+
+        .btn-edit:hover {
+            background: #ffbd2e;
+            color: #000;
+        }
+
+        .btn-delete:hover {
+            background: #E6873C;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 100px;
+            color: var(--text-dim);
+        }
+
+        /* File Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--primary);
+            background: rgba(207, 176, 141, 0.07);
+        }
+
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-zone-label {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .upload-zone-label i {
+            font-size: 1.6rem;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .file-chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .file-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(207,176,141,0.15);
+            border: 1px solid rgba(207,176,141,0.35);
+            color: var(--text-main);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        .file-chip .chip-remove {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #E6873C;
+            font-size: 0.75rem;
+            line-height: 1;
+        }
+
+        /* Attachment download chips in table */
+        .attach-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(61,140,149,0.1);
+            color: #2c6d75;
+            border-radius: 20px;
+            padding: 3px 9px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin: 2px;
+        }
+
+        .attach-chip:hover {
+            background: rgba(61,140,149,0.25);
+            color: #1a4d54;
+        }
+
+        @media (max-width: 991px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fa-solid fa-shield-halved me-2"></i>SECURE<span>CHAT</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars-staggered" style="color: var(--text-main);"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#console">Console</a></li>
+                    {% if session.get('username') %}
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout ({{ session['username'] }})</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                    {% endif %}
+                    <li class="nav-item ms-lg-4">
+                        <a href="/#console" class="btn btn-glow btn-sm py-2">Get Started</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="hero-title" data-aos="fade-up">The Future of <br>Secure Messaging</h1>
+            <p class="hero-subtitle mx-auto" data-aos="fade-up" data-aos-delay="100">
+                A mid-tier CRUD environment built for performance, security, and charisma. Experience seamless data
+                management wrapped in a cutting-edge interface.
+            </p>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <a href="#console" class="btn btn-glow">Enter Secure Console</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Info -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="glass-card h-100">
+                        <div class="feature-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                        <h4>High Performance</h4>
+                        <p class="text-dim">Optimized Flask architecture ensuring microseconds of latency for your data
+                            operations.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="glass-card h-100">
+                        <div class="feature-icon"><i class="fa-solid fa-lock"></i></div>
+                        <h4>SQL Integrity</h4>
+                        <p class="text-dim">Full SQLAlchemy integration for robust, reliable, and secure database
+                            interactions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="glass-card h-100">
+                        <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h4>Premium UI</h4>
+                        <p class="text-dim">Tailored Glassmorphism design that feels responsive and looks stunning on
+                            any device.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrated Secure Console (CRUD) -->
+    <section id="console" class="py-5 mt-5">
+        <div class="container">
+            <div class="glass-card shadow-lg" data-aos="zoom-in">
+                <div class="console-header">
+                    <div class="console-dot dot-red"></div>
+                    <div class="console-dot dot-yellow"></div>
+                    <div class="console-dot dot-green"></div>
+                    <span class="ms-2 text-dim small fw-bold">SECURE_CHAT_CONSOLE_V2.0</span>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-5 mb-5 mb-lg-0">
+                        <h3 class="mb-4">Send New Message</h3>
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            <div class="mb-4">
+                                <label class="form-label text-dim small">IDENTIFIER</label>
+                                {{ form.username(class="form-control", placeholder="Enter username...", required=True) }}
+                                {% for error in form.username.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-dim small">ATTACH_FILE <span class="opacity-50">(optional · max 5 MB · png jpg gif pdf txt doc docx zip)</span></label>
+                                <div class="upload-zone" id="uploadZone">
+                                    <input type="file" name="attachments" id="attachmentsInput" multiple accept=".png,.jpg,.jpeg,.gif,.pdf,.txt,.doc,.docx,.zip">
+                                    <div class="upload-zone-label" id="uploadLabel">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        Click or drag &amp; drop files here
+                                    </div>
+                                </div>
+                                <div class="file-chip-list" id="fileChipList"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label text-dim small">DATA_STREAM</label>
+                                {{ form.message(class="form-control", rows="3", placeholder="Type your secure message...", required=True) }}
+                                {% for error in form.message.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} small mt-3">{{ message }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+
+                            <button class="btn btn-glow w-100 mt-2">
+                                <i class="fa-solid fa-terminal me-2"></i>Execute Transmission
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <h3 class="mb-4">Live Data Logs</h3>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>ORIGIN</th>
+                                        <th>PAYLOAD</th>
+                                        <th class="text-end">OPS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if messages %}
+                                    {% for msg in messages %}
+                                    <tr>
+                                        <td><span class="text-dim small">#{{msg.id}}</span></td>
+                                        <td><span class="badge-user">{{msg.username}}</span></td>
+                                        <td>
+                                            {{msg.message}}
+                                            {% if msg.attachments %}
+                                            <div class="mt-1">
+                                                {% for att in msg.attachments %}
+                                                <a href="/uploads/{{ att.stored_name }}" class="attach-chip" title="Download {{ att.original_name }}" download="{{ att.original_name }}">
+                                                    <i class="fa-solid fa-paperclip"></i> {{ att.original_name }}
+                                                </a>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="/update/{{msg.id}}" class="action-btn btn-edit" title="Modify"><i
+                                                    class="fa-solid fa-code"></i></a>
+                                            <a href="/delete/{{msg.id}}" class="action-btn btn-delete ms-1"
+                                                title="Nuke"><i class="fa-solid fa-trash-can"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-dim">
+                                            <i class="fa-solid fa-cloud-moon d-block mb-3 fs-1 opacity-25"></i>
+                                            DATA_STREAM_EMPTY: Awaiting first entry...
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2026 SecureChat. No boring bits allowed.</p>
+            <div class="mt-3">
+                <a href="#" class="text-dim me-3"><i class="fa-brands fa-github fs-5"></i></a>
+                <a href="#" class="text-dim me-3"><i class="fa-brands fa-twitter fs-5"></i></a>
+                <a href="#" class="text-dim"><i class="fa-brands fa-linkedin fs-5"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        window.addEventListener('scroll', function () {
+            const nav = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.8rem 0';
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+                nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+            } else {
+                nav.style.padding = '1.2rem 0';
+                nav.style.background = 'rgba(255, 255, 255, 0.85)';
+                nav.style.boxShadow = 'none';
+            }
+        });
+
+        // ---- File Upload UX ----
+        const input     = document.getElementById('attachmentsInput');
+        const zone      = document.getElementById('uploadZone');
+        const label     = document.getElementById('uploadLabel');
+        const chipList  = document.getElementById('fileChipList');
+
+        // Track the DataTransfer so we can remove individual files
+        let selectedFiles = [];
+
+        function syncInput() {
+            const dt = new DataTransfer();
+            selectedFiles.forEach(f => dt.items.add(f));
+            input.files = dt.files;
+        }
+
+        function getFileIcon(name) {
+            const ext = name.split('.').pop().toLowerCase();
+            if (['png','jpg','jpeg','gif'].includes(ext)) return 'fa-file-image';
+            if (ext === 'pdf')                            return 'fa-file-pdf';
+            if (['doc','docx'].includes(ext))            return 'fa-file-word';
+            if (ext === 'zip')                            return 'fa-file-zipper';
+            return 'fa-file-lines';
+        }
+
+        function renderChips() {
+            chipList.innerHTML = '';
+            selectedFiles.forEach((file, idx) => {
+                const chip = document.createElement('span');
+                chip.className = 'file-chip';
+                chip.innerHTML = `<i class="fa-solid ${getFileIcon(file.name)}"></i>
+                    <span>${file.name} <small class="opacity-50">(${(file.size/1024).toFixed(1)} KB)</small></span>
+                    <button class="chip-remove" type="button" data-idx="${idx}" title="Remove">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>`;
+                chipList.appendChild(chip);
+            });
+            label.style.display = selectedFiles.length ? 'none' : '';
+        }
+
+        chipList.addEventListener('click', function(e) {
+            const btn = e.target.closest('.chip-remove');
+            if (!btn) return;
+            const idx = parseInt(btn.dataset.idx, 10);
+            selectedFiles.splice(idx, 1);
+            syncInput();
+            renderChips();
+        });
+
+        input.addEventListener('change', function() {
+            const newFiles = Array.from(input.files);
+            newFiles.forEach(f => {
+                if (!selectedFiles.find(x => x.name === f.name && x.size === f.size))
+                    selectedFiles.push(f);
+            });
+            syncInput();
+            renderChips();
+        });
+
+        zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', e => { zone.classList.remove('drag-over'); });
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            const dropped = Array.from(e.dataTransfer.files);
+            dropped.forEach(f => {
+                if (!selectedFiles.find(x => x.name === f.name && x.size === f.size))
+                    selectedFiles.push(f);
+            });
+            syncInput();
+            renderChips();
+        });
+    </script>
+
+</body>
+
+</html>
