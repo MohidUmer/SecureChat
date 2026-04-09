@@ -14,6 +14,10 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import secrets
 import os
+import sys
+
+# Ensure the root directory is in the path so imports like 'forms' work on Vercel
+sys.path.append(os.path.dirname(__file__))
 
 from forms import RegistrationForm, LoginForm, MessageForm
 
@@ -80,12 +84,21 @@ csrf = CSRFProtect(app)
 bcrypt = Bcrypt(app)
 
 # Task 4: Database URI from environment
-# Default to a local sqlite if no DATABASE_URL is provided, but note that 
-# on Vercel sqlite won't persist unless using an external volume/DB.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///securechat.db')
+# On Vercel, sqlite must be in /tmp
+if os.environ.get('VERCEL') and (not os.getenv('DATABASE_URL') or os.getenv('DATABASE_URL').startswith('sqlite')):
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/securechat.db'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///securechat.db')
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
 db = SQLAlchemy(app)
+
+# Ensure tables are created on startup (essential for transient /tmp sqlite)
+with app.app_context():
+    db.create_all()
+
 
 # Database Models
 class User(db.Model):
