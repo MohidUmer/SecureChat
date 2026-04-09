@@ -101,10 +101,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Ensure tables are created on startup (essential for transient /tmp sqlite)
-with app.app_context():
-    db.create_all()
-
 
 # Database Models
 class User(db.Model):
@@ -133,6 +129,11 @@ class FileAttachment(db.Model):
 
     def __repr__(self):
         return f"Attachment({self.original_name})"
+
+# Ensure tables are created on startup (essential for transient /tmp sqlite)
+# Must happen AFTER models are defined
+with app.app_context():
+    db.create_all()
 
 # Task 5: Role-Based Access Control (RBAC) Decorator
 def login_required(f):
@@ -324,11 +325,6 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    # If we are debugging or on Vercel and want to see the error
-    if os.environ.get('VERCEL'):
-        import traceback
-        error_details = traceback.format_exc()
-        return f"Internal Server Error Traceback:\n{error_details}", 500
     return render_template('500.html'), 500
 
 if __name__ == "__main__":
