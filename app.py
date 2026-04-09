@@ -20,15 +20,17 @@ from forms import RegistrationForm, LoginForm, MessageForm
 # Task 4: Environmental Secret Management
 load_dotenv() # Loads variables from .env into the system
 
-from werkzeug.serving import WSGIRequestHandler
-
-# Override version_string() — the actual method Werkzeug calls to build the Server header.
-# Setting class attributes alone does NOT work in Werkzeug 3.x.
-WSGIRequestHandler.version_string = lambda self: 'SecureChat'
+# Secure the Server Header (Customization)
+try:
+    from werkzeug.serving import WSGIRequestHandler
+    # Override version_string() — the actual method Werkzeug calls to build the Server header.
+    WSGIRequestHandler.version_string = lambda self: 'SecureChat'
+except ImportError:
+    pass
 
 app = Flask(__name__)
 # Task 4: Load secret key from environment
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', secrets.token_hex(24))
 
 # Task 1: Security Headers via Talisman
 # Instructs the browser to block malicious behavior like clickjacking.
@@ -55,7 +57,12 @@ app.config.update(
 
 # Task 3: Secure File Uploads
 # Ensure uploaded files cannot "trick" the server into running them as code.
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+# On Vercel, we must use /tmp for any writeable operations.
+if os.environ.get('VERCEL'):
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx', 'zip'}
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB limit
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -73,7 +80,9 @@ csrf = CSRFProtect(app)
 bcrypt = Bcrypt(app)
 
 # Task 4: Database URI from environment
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# Default to a local sqlite if no DATABASE_URL is provided, but note that 
+# on Vercel sqlite won't persist unless using an external volume/DB.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///securechat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
