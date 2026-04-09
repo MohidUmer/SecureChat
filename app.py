@@ -326,7 +326,9 @@ def page_not_found(e):
 def internal_server_error(e):
     # If we are debugging or on Vercel and want to see the error
     if os.environ.get('VERCEL'):
-        return f"Internal Server Error: {str(e)}", 500
+        import traceback
+        error_details = traceback.format_exc()
+        return f"Internal Server Error Traceback:\n{error_details}", 500
     return render_template('500.html'), 500
 
 if __name__ == "__main__":
