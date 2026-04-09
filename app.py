@@ -85,10 +85,16 @@ bcrypt = Bcrypt(app)
 
 # Task 4: Database URI from environment
 # On Vercel, sqlite must be in /tmp
-if os.environ.get('VERCEL') and (not os.getenv('DATABASE_URL') or os.getenv('DATABASE_URL').startswith('sqlite')):
+database_url = os.getenv('DATABASE_URL')
+
+# Fix for legacy 'postgres://' URLs which cause SQLAlchemy to crash
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+if os.environ.get('VERCEL') and (not database_url or database_url.startswith('sqlite')):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/securechat.db'
 else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///securechat.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///securechat.db'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -318,6 +324,9 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
+    # If we are debugging or on Vercel and want to see the error
+    if os.environ.get('VERCEL'):
+        return f"Internal Server Error: {str(e)}", 500
     return render_template('500.html'), 500
 
 if __name__ == "__main__":
